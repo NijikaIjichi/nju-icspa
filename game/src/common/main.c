@@ -2,6 +2,7 @@
 #include "x86.h"
 
 void init_timer();
+void exit(int status);
 int syscall(int id, ...);
 
 void add_irq_handle(int irq, void *handler)
@@ -19,6 +20,6 @@ void game_init(void)
 	Log("game start!");
 
 	main_loop();
-
+    exit(0);
 	assert(0); /* main_loop是死循环，永远无法返回这里 */
 }

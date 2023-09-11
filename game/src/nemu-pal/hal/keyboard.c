@@ -6,7 +6,8 @@ enum
 	KEY_STATE_EMPTY,
 	KEY_STATE_WAIT_RELEASE,
 	KEY_STATE_RELEASE,
-	KEY_STATE_PRESS
+	KEY_STATE_PRESS,
+    KEY_STATE_PRESS_NOT_HANDLE
 };
 
 static const int keycode_hash[] = {
@@ -28,7 +29,11 @@ void keyboard_event(void)
 		{
 			if (code & 0x80)
 			{
-				key_state[i] = KEY_STATE_RELEASE;
+                if (key_state[i] == KEY_STATE_PRESS) {
+                    key_state[i] = KEY_STATE_PRESS_NOT_HANDLE;
+                } else {
+				    key_state[i] = KEY_STATE_RELEASE;
+                }
 			}
 			else if (key_state[i] == KEY_STATE_EMPTY)
 			{
@@ -79,6 +84,9 @@ bool process_keys(void (*key_press_callback)(int), void (*key_release_callback)(
             release_key(i); key_press_callback(get_keycode(i)); sti(); return true;
         case KEY_STATE_RELEASE:
             clear_key(i); key_release_callback(get_keycode(i)); sti(); return true;
+        case KEY_STATE_PRESS_NOT_HANDLE:
+            clear_key(i); key_press_callback(get_keycode(i));
+            key_release_callback(get_keycode(i)); sti(); return true;
         }
     }
 	sti();

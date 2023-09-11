@@ -6,6 +6,7 @@
 #include "monitor/breakpoint.h"
 #include <stdio.h>
 #include <assert.h>
+#include <time.h>
 
 CPU_STATE cpu;
 extern FPU fpu;
@@ -52,7 +53,8 @@ void exec(uint32_t n)
 	verbose = (n <= 100000);
 	int instr_len = 0;
 	bool hit_break_rerun = false;
-
+    uint64_t num = (uint64_t)n;
+    clock_t before = clock();
 	if (nemu_state == NEMU_BREAK)
 	{
 		hit_break_rerun = true;
@@ -99,6 +101,7 @@ void exec(uint32_t n)
 				break;
 			}
 		}
+
 #if defined(HAS_DEVICE_TIMER) || defined(HAS_DEVICE_VGA) || defined(HAS_DEVICE_KEYBOARD) || defined(HAS_DEVICE_AUDIO)
 	do_devices();
 #endif
@@ -107,6 +110,9 @@ void exec(uint32_t n)
 		do_intr();
 #endif
 	}
+    clock_t after = clock();
+    double speed = (num - n) / ((double)(after - before) / CLOCKS_PER_SEC);
+    printf("exec %lu instr. %e instr per sec.\n", num - n, speed);
 	if (nemu_state == NEMU_STOP)
 	{
 		printf("NEMU2 terminated\n");

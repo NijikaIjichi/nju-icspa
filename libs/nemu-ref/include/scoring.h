@@ -3,8 +3,8 @@
 
 void clear_ref();
 void set_ref();
-int get_ref();
-
+//int get_ref();
+#define get_ref() 0
 // write trap info
 void score_trap();
 void score_expr();

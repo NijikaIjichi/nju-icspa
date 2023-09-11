@@ -1,5 +1,6 @@
 #include "common.h"
 #include "memory.h"
+#include "proc.h"
 
 void init_page();
 void init_serial();
@@ -8,13 +9,16 @@ void init_i8259();
 void init_segment();
 void init_idt();
 void init_mm();
-uint32_t loader();
 
+void create_video_mapping(PDE *pgdir);
 void video_mapping_write_test();
 void video_mapping_read_test();
 void video_mapping_clear();
 
 void init_cond();
+
+extern size_t heap_start;
+extern char end;
 
 /* Initialization phase 1
  * The assembly code in start.S will finally jump here.
@@ -62,7 +66,7 @@ void init_cond()
 	init_idt();
 
 	/* Enable interrupts. */
-	sti();
+	// sti();
 #endif
 
 #ifdef HAS_DEVICE_IDE
@@ -72,9 +76,10 @@ void init_cond()
 
 #ifdef IA32_PAGE
 	/* Initialize the memory manager. */
-	init_mm();
+	//init_mm();
 #endif
-
+    heap_start = PAGE_UP(&end);
+    Log("Free physics mem start from 0x%08x.", heap_start);
 	/* Output a welcome message.
 	 * Note that the output is actually performed only when
 	 * the serial port is available in NEMU.
@@ -82,11 +87,13 @@ void init_cond()
 	Log("Hello, NEMU world!");
 
 #ifdef HAS_DEVICE_VGA
+    create_video_mapping(get_kpdir());
 	/* Write some test data to the video memory. */
 	video_mapping_write_test();
 #endif
 	/* Load the program. */
-	uint32_t eip = loader();
+	// uint32_t eip = loader();
+    init_proc();
 #ifdef HAS_DEVICE_VGA
 	/* Read data in the video memory to check whether 
 	 * the test data is written sucessfully.
@@ -96,16 +103,9 @@ void init_cond()
 	/* Clear the test data we just written in the video memory. */
 	video_mapping_clear();
 #endif
+    Log("Init finish.");
 
-#ifdef IA32_PAGE
-	/* Set the %esp for user program, which is one of the
-	 * convention of the "advanced" runtime environment. */
-	asm volatile("movl %0, %%esp"
-				 :
-				 : "i"(KOFFSET));
-#endif
+    yield();
 
-	//asm volatile(".byte 0x82" : : "a"(2));
-	/* Here we go! */
-	((void (*)(void))eip)();
+    panic("Should not reach here.");
 }

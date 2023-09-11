@@ -37,7 +37,7 @@ void vga_vmem_io_handler(uint32_t addr, size_t len, bool is_write)
 {
 	if (is_write)
 	{
-		int line = (addr - 0xa0000) / CTR_COL;
+		int line = (addr - 0xa0000000) / CTR_COL;
 		if (line < CTR_ROW)
 		{
 			line_dirty[line] = true;
@@ -128,7 +128,7 @@ void vga_init()
 {
 	//vga_dac_port_base = add_pio_map(VGA_DAC_WRITE_INDEX, 2, vga_dac_io_handler);
 	//vga_crtc_port_base = add_pio_map(VGA_CRTC_INDEX, 2, vga_crtc_io_handler);
-	vmem_base = add_mmio_map(0xa0000, 0x20000, vga_vmem_io_handler);
+	vmem_base = add_mmio_map(0xa0000000, 0x20000, vga_vmem_io_handler);
 	vga_active = true;
 	time_interval = 1000 / VGA_HZ;
 	last_time = get_current_time_ms();

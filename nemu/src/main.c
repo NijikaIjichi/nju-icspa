@@ -44,7 +44,7 @@ static void load_exec(const char *image_file, const uint32_t load_off)
 
 static void restart(const uint32_t init_eip)
 {
-	clear_ref();
+	//clear_ref();
 	/* Initialize CPU and memory*/
 	init_cpu(init_eip);
 	init_mem();
@@ -76,6 +76,7 @@ static void single_run(const char *img_file_path, const char *elf_file_path)
 
 void log_nemu_config()
 {
+    /*
 #ifdef CACHE_ENABLED
 	score_set_cache_enabled();
 #endif
@@ -110,6 +111,7 @@ void log_nemu_config()
 	score_set_has_device_audio();
 #endif
 	score_fix_config(); // prevent further changes to config log
+    */
 }
 
 bool parse_args(int argc, char *argv[]);
@@ -128,7 +130,7 @@ int main(int argc, char *argv[])
 	if (flag_score_expr)
 	{
 		init_regex();
-		score_expr();
+		//score_expr();
 		return 0;
 	}
 

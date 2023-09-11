@@ -42,8 +42,6 @@ nemu/nemu
 kernel/kernel
 kernel/kernel.txt
 game/game
-game/game_elf
-game/game_elf.txt
 testcase/objdump4nemu-i386
 testcase/bin/
 testcase/src/*
@@ -77,3 +75,7 @@ dkms.conf
 
 .vscode
 compile_commands.json
+game/main_game
+game/main_game_elf.txt
+game/sub_game
+game/sub_game_elf.txt

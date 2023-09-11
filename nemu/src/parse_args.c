@@ -63,7 +63,7 @@ static bool main_arg_score(char *noUse)
 static bool main_arg_reg_test(char *noUse)
 {
 	builtin_test_func = reg_test;
-	builtin_score_func = __score_reg_test;
+	builtin_score_func = 0;
 	flag_reg_alu_fpu = true;
 	return true;
 }
@@ -74,21 +74,21 @@ static struct alu_operation_map
 	void (*alu_test_func)();
 	void (*alu_score_func)();
 } alu_operation_list[] = {
-	{"add", alu_test_add, __score_alu_test_add},
-	{"adc", alu_test_adc, __score_alu_test_adc},
-	{"sub", alu_test_sub, __score_alu_test_sub},
-	{"sbb", alu_test_sbb, __score_alu_test_sbb},
-	{"and", alu_test_and, __score_alu_test_and},
-	{"or", alu_test_or, __score_alu_test_or},
-	{"xor", alu_test_xor, __score_alu_test_xor},
-	{"shl", alu_test_shl, __score_alu_test_shl},
-	{"shr", alu_test_shr, __score_alu_test_shr},
-	{"sal", alu_test_sal, __score_alu_test_sal},
-	{"sar", alu_test_sar, __score_alu_test_sar},
-	{"mul", alu_test_mul, __score_alu_test_mul},
-	{"div", alu_test_div, __score_alu_test_div},
-	{"imul", alu_test_imul, __score_alu_test_imul},
-	{"idiv", alu_test_idiv, __score_alu_test_idiv}};
+	{"add", alu_test_add, 0},
+	{"adc", alu_test_adc, 0},
+	{"sub", alu_test_sub, 0},
+	{"sbb", alu_test_sbb, 0},
+	{"and", alu_test_and, 0},
+	{"or", alu_test_or, 0},
+	{"xor", alu_test_xor, 0},
+	{"shl", alu_test_shl, 0},
+	{"shr", alu_test_shr, 0},
+	{"sal", alu_test_sal, 0},
+	{"sar", alu_test_sar, 0},
+	{"mul", alu_test_mul, 0},
+	{"div", alu_test_div, 0},
+	{"imul", alu_test_imul, 0},
+	{"idiv", alu_test_idiv, 0}};
 #define NR_ALU_OPERATION_TEST (sizeof(alu_operation_list) / sizeof(alu_operation_list[0]))
 static bool main_arg_alu_test(char *operation)
 {
@@ -117,16 +117,16 @@ static struct fpu_operation_map
 	void (*fpu_test_func)();
 	void (*fpu_score_func)();
 } fpu_operation_list[] = {
-	{"add", fpu_test_add, __score_fpu_test_add},
-	{"sub", fpu_test_sub, __score_fpu_test_sub},
-	{"mul", fpu_test_mul, __score_fpu_test_mul},
-	{"div", fpu_test_div, __score_fpu_test_div},
+	{"add", fpu_test_add, 0},
+	{"sub", fpu_test_sub, 0},
+	{"mul", fpu_test_mul, 0},
+	{"div", fpu_test_div, 0},
 };
 #define NR_FPU_OPERATION_TEST (sizeof(fpu_operation_list) / sizeof(fpu_operation_list[0]))
 static bool main_arg_fpu_test(char *operation)
 {
 	init_fpu_test(); // init fpu test
-	__score_init_fpu_test();
+	//__score_init_fpu_test();
 	int i = 0;
 	for (i = 0; i < NR_FPU_OPERATION_TEST; i++)
 	{

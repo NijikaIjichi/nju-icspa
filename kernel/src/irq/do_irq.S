@@ -16,6 +16,7 @@
 .globl vec14;   vec14:             pushl   $14; jmp asm_do_irq
 
 .globl vecsys; vecsys:  pushl $0;  pushl $0x80; jmp asm_do_irq
+.globl vectrp; vectrp:  pushl $0;  pushl $0x81; jmp asm_do_irq
 
 .globl irq0;     irq0:  pushl $0;  pushl $1000; jmp asm_do_irq
 .globl irq1;     irq1:  pushl $0;  pushl $1001; jmp asm_do_irq
@@ -32,10 +33,10 @@
 
 asm_do_irq:
 	pushal
-
+    pushl $0
 	pushl %esp		# ???
 	call irq_handle
-	
+	movl %eax, %esp
 	addl $4, %esp
 	popal
 	addl $8, %esp

@@ -1,22 +1,38 @@
 #include "common.h"
 #include "x86.h"
+#include "memory.h"
 
 //#define USE_DMA_READ
-
+#define MY_IDE
 #define IDE_PORT_BASE 0x1F0
 
+#ifndef MY_IDE
 void dma_prepare(void *);
 void dma_issue_read(void);
 
 void clear_ide_intr(void);
 void wait_ide_intr(void);
+#else
+enum {
+    ADDR = IDE_PORT_BASE,
+    BLKNO = IDE_PORT_BASE + 4,
+    SIZE = IDE_PORT_BASE + 8,
+    RW = IDE_PORT_BASE + 12,    // 0: read, 1: write
+    STATUS = IDE_PORT_BASE + 13 // 0: free, 1: work
+};
+#endif
 
 static void waitdisk()
 {
+#ifndef MY_IDE
 	while ((in_byte(IDE_PORT_BASE + 7) & (0x80 | 0x40)) != 0x40)
 		;
+#else
+    while (in_byte(STATUS)) ;
+#endif
 }
 
+#ifndef MY_IDE
 static void
 ide_prepare(uint32_t sector)
 {
@@ -34,7 +50,9 @@ ide_prepare(uint32_t sector)
 	out_byte(IDE_PORT_BASE + 5, (sector >> 16) & 0xFF);
 	out_byte(IDE_PORT_BASE + 6, 0xE0 | ((sector >> 24) & 0xFF));
 }
+#endif
 
+#ifndef MY_IDE
 static inline void
 issue_read()
 {
@@ -45,15 +63,19 @@ issue_read()
 	out_byte(IDE_PORT_BASE + 7, 0x20);
 #endif
 }
+#endif
 
+#ifndef MY_IDE
 static inline void
 issue_write()
 {
 	out_byte(IDE_PORT_BASE + 7, 0x30);
 }
+#endif
 
 void disk_do_read(void *buf, uint32_t sector)
 {
+#ifndef MY_IDE
 #ifdef USE_DMA_READ
 	dma_prepare(buf);
 #endif
@@ -72,10 +94,18 @@ void disk_do_read(void *buf, uint32_t sector)
 		*(((uint32_t *)buf) + i) = in_long(IDE_PORT_BASE);
 	}
 #endif
+#else
+    out_long(ADDR, (uint32_t)va_to_pa(buf));
+    out_long(BLKNO, sector);
+    out_byte(RW, 0);
+    out_byte(STATUS, 1);
+    waitdisk();
+#endif
 }
 
 void disk_do_write(void *buf, uint32_t sector)
 {
+#ifndef MY_IDE
 	int i;
 
 	ide_prepare(sector);
@@ -85,4 +115,19 @@ void disk_do_write(void *buf, uint32_t sector)
 	{
 		out_long(IDE_PORT_BASE, *(((uint32_t *)buf) + i));
 	}
+#else
+    out_long(ADDR, (uint32_t)va_to_pa(buf));
+    out_long(BLKNO, sector);
+    out_byte(RW, 1);
+    out_byte(STATUS, 1);
+    waitdisk();
+#endif
+}
+
+size_t disk_sz() {
+#ifndef MY_IDE
+    return in_long(IDE_PORT_BASE + 8);
+#else
+    return in_long(SIZE);
+#endif
 }

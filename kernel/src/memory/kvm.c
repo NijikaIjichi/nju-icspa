@@ -47,6 +47,7 @@ void init_page(void)
 
 /* GDT in the kernel's memory, whose virtual memory is greater than 0xC0000000. */
 SegDesc gdt[NR_SEGMENTS];
+TSS32 tss;
 
 static void
 set_segment(SegDesc *ptr, uint32_t pl, uint32_t type)
@@ -66,6 +67,11 @@ set_segment(SegDesc *ptr, uint32_t pl, uint32_t type)
 	ptr->base_31_24 = 0x0;
 }
 
+#define SEG16(type, base, lim, dpl) (SegDesc)        \
+{ (lim) & 0xffff, (uintptr_t)(base) & 0xffff,        \
+  ((uintptr_t)(base) >> 16) & 0xff, type, 0, dpl, 1, \
+  (uintptr_t)(lim) >> 16, 0, 0, 1, 0, (uintptr_t)(base) >> 24 }
+
 /* This is similar with the one in start.S. However the previous
  * one cannot be accessed in user process, because its virtual address
  * below 0xC0000000, and is not in the user process' address space. */
@@ -74,6 +80,12 @@ void init_segment(void)
 	memset(gdt, 0, sizeof(gdt));
 	set_segment(&gdt[SEG_KERNEL_CODE], DPL_KERNEL, SEG_EXECUTABLE | SEG_READABLE);
 	set_segment(&gdt[SEG_KERNEL_DATA], DPL_KERNEL, SEG_WRITABLE);
-
+    gdt[SEG_KERNEL_TSS] = SEG16(STS_T32A, &tss, sizeof(tss) - 1, DPL_KERNEL);
 	write_gdtr(gdt, sizeof(gdt));
+    tss.ss0 = SELECTOR_KERNEL(2);
+    set_tr(SELECTOR_KERNEL(SEG_KERNEL_TSS));
+}
+
+void set_kstack(void *kstack_top) {
+    tss.esp0 = (uint32_t)kstack_top;
 }

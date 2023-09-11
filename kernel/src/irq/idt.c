@@ -53,6 +53,7 @@ void vec12();
 void vec13();
 void vec14();
 void vecsys();
+void vectrp();
 
 void irq_empty();
 
@@ -81,6 +82,7 @@ void init_idt()
 
 	/* the system call 0x80 */
 	set_trap(idt + 0x80, SEG_KERNEL_CODE << 3, (uint32_t)vecsys, DPL_USER);
+    set_trap(idt + 0x81, SEG_KERNEL_CODE << 3, (uint32_t)vectrp, DPL_KERNEL);
 
 	set_intr(idt + 32 + 0, SEG_KERNEL_CODE << 3, (uint32_t)irq0, DPL_KERNEL);   // timer
 	set_intr(idt + 32 + 1, SEG_KERNEL_CODE << 3, (uint32_t)irq1, DPL_KERNEL);   // keyboard
@@ -89,5 +91,4 @@ void init_idt()
 
 	/* the ``idt'' is its virtual address */
 	write_idtr(idt, sizeof(idt));
-	sti();
 }

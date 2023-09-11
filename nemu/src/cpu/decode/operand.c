@@ -165,7 +165,7 @@ void parse_operand_address(OPERAND *opr, char *str)
 			strcpy(str, reg_names_l[opr->addr]);
 			return;
 		default:
-			printf("illegal operand size %d\n", opr->data_size);
+			printf("illegal operand size %ld\n", opr->data_size);
 			fflush(stdout);
 			assert(0);
 			return;

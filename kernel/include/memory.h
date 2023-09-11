@@ -24,5 +24,15 @@
 #define make_pte(addr) ((((uint32_t)(addr)) & 0xfffff000) | 0x7)
 
 uint32_t mm_malloc(uint32_t, int len);
+void *new_space(size_t len);
+void map(PDE *page_dic, void *kva, size_t uva, size_t len);
+PDE *protect();
+void create_video_mapping(PDE *pgdir);
+
+#define PAGE_DOWN(addr) (((uint32_t)addr) & 0xfffff000)
+#define PAGE_UP(addr) (((uint32_t)addr + 0xfff) & 0xfffff000)
+
+PDE *get_kpdir();
+void set_kstack(void *kstack_top);
 
 #endif

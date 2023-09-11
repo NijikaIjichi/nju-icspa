@@ -66,6 +66,15 @@ write_cr3(uint32_t cr3)
 				 : "r"(cr3));
 }
 
+static inline uint32_t
+read_cr3()
+{
+	uint32_t val;
+	asm volatile("movl %%cr3, %0"
+				 : "=r"(val));
+	return val;
+}
+
 /* modify the value of GDTR */
 static inline void
 write_gdtr(void *addr, uint32_t size)
@@ -111,6 +120,14 @@ static inline void
 wait_intr()
 {
 	asm volatile("hlt");
+}
+
+static inline void yield() {
+    asm volatile("int $0x81");
+}
+
+static inline void set_tr(int selector) {
+  asm volatile ("ltr %0" : : "r"((uint16_t)selector));
 }
 
 #define NR_IRQ 256

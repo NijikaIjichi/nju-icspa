@@ -75,3 +75,8 @@ void write_byte(uint32_t offset, uint8_t data)
 	ptr->content[offset & 511] = data;
 	ptr->dirty = true;
 }
+
+uint8_t *read_blk(uint32_t sector) {
+    struct SectorCache *ptr = cache_fetch(sector);
+	return ptr->content;
+}

@@ -41,6 +41,8 @@ static struct pio_handler_map
     {IDE_PORT_BASE + 9, handler_ide},
     {IDE_PORT_BASE + 10, handler_ide},
     {IDE_PORT_BASE + 11, handler_ide},
+    {IDE_PORT_BASE + 12, handler_ide},
+    {IDE_PORT_BASE + 13, handler_ide},
 #endif
 
 #ifdef HAS_DEVICE_KEYBOARD

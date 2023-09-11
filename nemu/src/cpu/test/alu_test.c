@@ -37,7 +37,7 @@ typedef union {
 
 #define assert_res_CPSZO(dataSize) \
 		"pushf;" \
-		"popl %%edx;" \
+		"popq %%rdx;" \
 		: "=a" (res_asm), "=d" (res_eflags) \
 		: "a" (a), "c" (b)); \
 	test_eflags.val = res_eflags; \
@@ -52,7 +52,7 @@ typedef union {
 
 #define assert_res_CPSZ(dataSize) \
 		"pushf;" \
-		"popl %%edx;" \
+		"popq %%rdx;" \
 		: "=a" (res_asm), "=d" (res_eflags) \
 		: "a" (a), "c" (b)); \
 	test_eflags.val = res_eflags; \
@@ -471,7 +471,7 @@ void alu_test_imul() {
 
 			asm (	"imulb %%cl;"
 				"pushf;"
-				"popl %%ecx;"
+				"popq %%rcx;"
 				: "=a" (res_asm_a), "=c" (res_eflags)
 				: "a" (a & 0xff), "c" (b & 0xff));
 
@@ -488,7 +488,7 @@ void alu_test_imul() {
 
 		asm (	"imulb %%cl;"
 			"pushf;"
-			"popl %%ecx;"
+			"popq %%rcx;"
 			: "=a" (res_asm_a), "=c" (res_eflags)
 			: "a" (a & 0xff), "c" (b & 0xff));
 
@@ -504,7 +504,7 @@ void alu_test_imul() {
 
 			asm (	"imulw %%cx;"
 				"pushf;"
-				"popl %%ecx;"
+				"popq %%rcx;"
 				: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 				: "a" (a & 0xffff), "c" (b & 0xffff));
 
@@ -520,7 +520,7 @@ void alu_test_imul() {
 
 		asm (	"imulw %%cx;"
 			"pushf;"
-			"popl %%ecx;"
+			"popq %%rcx;"
 			: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 			: "a" (a & 0xffff), "c" (b & 0xffff));
 	
@@ -536,7 +536,7 @@ void alu_test_imul() {
 			res = alu_imul(b, a, 32);
 			asm (	"imull %%ecx;"
 				"pushf;"
-				"popl %%ecx;"
+				"popq %%rcx;"
 				: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 				: "a" (a), "c" (b));
 	
@@ -553,7 +553,7 @@ void alu_test_imul() {
 		res = alu_imul(b, a, 32);
 		asm (	"imull %%ecx;"
 			"pushf;"
-			"popl %%ecx;"
+			"popq %%rcx;"
 			: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 			: "a" (a), "c" (b));
 	
@@ -581,7 +581,7 @@ void alu_test_mul() {
 			res = alu_mul(b, a, 32);
 			asm (	"mull %%ecx;"
 				"pushf;"
-				"popl %%ecx;"
+				"popq %%rcx;"
 				: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 				: "a" (a), "c" (b));
 				test_eflags.val = res_eflags;
@@ -603,7 +603,7 @@ void alu_test_mul() {
 
 		asm (	"mull %%ecx;"
 			"pushf;"
-			"popl %%ecx;"
+			"popq %%rcx;"
 			: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 			: "a" (a), "c" (b));
 			test_eflags.val = res_eflags;
@@ -625,7 +625,7 @@ void alu_test_mul() {
 
 			asm (	"mulw %%cx;"
 				"pushf;"
-				"popl %%ecx;"
+				"popq %%rcx;"
 				: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 				: "a" (a & 0xffff), "c" (b & 0xffff));
 				test_eflags.val = res_eflags;
@@ -644,7 +644,7 @@ void alu_test_mul() {
 
 			asm (	"mulw %%cx;"
 				"pushf;"
-				"popl %%ecx;"
+				"popq %%rcx;"
 				: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 				: "a" (a & 0xffff), "c" (b & 0xffff));
 				test_eflags.val = res_eflags;
@@ -663,7 +663,7 @@ void alu_test_mul() {
 
 			asm (	"mulb %%cl;"
 				"pushf;"
-				"popl %%ecx;"
+				"popq %%rcx;"
 				: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 				: "a" (a & 0xff), "c" (b & 0xff));
 				test_eflags.val = res_eflags;
@@ -682,7 +682,7 @@ void alu_test_mul() {
 
 		asm (	"mulb %%cl;"
 			"pushf;"
-			"popl %%ecx;"
+			"popq %%rcx;"
 			: "=a" (res_asm_a), "=d" (res_asm_d), "=c" (res_eflags)
 			: "a" (a & 0xff), "c" (b & 0xff));
 			test_eflags.val = res_eflags;

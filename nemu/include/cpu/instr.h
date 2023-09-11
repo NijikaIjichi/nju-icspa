@@ -41,6 +41,7 @@ extern uint8_t data_size;
 #include "cpu/instr/leave.h"
 #include "cpu/instr/lgdt.h"
 #include "cpu/instr/lidt.h"
+#include "cpu/instr/ltr.h"
 #include "cpu/instr/mul.h"
 #include "cpu/instr/neg.h"
 #include "cpu/instr/not.h"

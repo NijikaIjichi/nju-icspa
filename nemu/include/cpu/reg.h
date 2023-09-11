@@ -135,6 +135,7 @@ typedef struct
 #else
 	uint8_t dummy_intr[7];
 #endif
+    uint16_t tr;
 } CPU_STATE;
 
 enum

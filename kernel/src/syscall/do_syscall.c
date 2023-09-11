@@ -1,5 +1,5 @@
 #include "x86.h"
-
+#include "proc.h"
 #include <sys/syscall.h>
 
 void add_irq_handle(int, void (*)(void));
@@ -43,14 +43,14 @@ static void sys_close(TrapFrame *tf)
 	tf->eax = fs_close(tf->ebx);
 }
 
-void do_syscall(TrapFrame *tf)
+TrapFrame *do_syscall(TrapFrame *tf)
 {
 	switch (tf->eax)
 	{
 	case 0:
-		cli();
+		//cli();
 		add_irq_handle(tf->ebx, (void *)tf->ecx);
-		sti();
+		//sti();
 		break;
 	case SYS_brk:
 		sys_brk(tf);
@@ -70,7 +70,15 @@ void do_syscall(TrapFrame *tf)
 	case SYS_close:
 		sys_close(tf);
 		break;
+    case SYS_sched_yield:
+        tf = schedule(tf, 1);
+        break;
+    case SYS_exit:
+        current->state = UNUSED;
+        tf = schedule(tf, 1);
+        break;
 	default:
 		panic("Unhandled system call: id = %d", tf->eax);
 	}
+    return tf;
 }

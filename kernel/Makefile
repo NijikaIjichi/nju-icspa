@@ -12,7 +12,7 @@ SSRC = $(shell find ./src -name "*.S")
 
 OBJS = $(SSRC:.S=.o) $(CSRC:.c=.o)
 START_OBJ = start/start.o
-MM_MALLOC_OBJ = src/memory/mm_malloc.o 
+#MM_MALLOC_OBJ = src/memory/mm_malloc.o 
 ALL_OBJS = $(OBJS) $(START_OBJ) 
 
 NEWLIBC = $(NEWLIBC_DIR)/libc.a

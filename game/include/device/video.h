@@ -6,7 +6,7 @@
 #define SCR_WIDTH 320
 #define SCR_HEIGHT 200
 #define SCR_SIZE ((SCR_WIDTH) * (SCR_HEIGHT))
-#define VMEM_ADDR ((uint8_t *)0xA0000)
+#define VMEM_ADDR ((uint8_t *)0xA0000000)
 
 extern uint8_t *vmem;
 

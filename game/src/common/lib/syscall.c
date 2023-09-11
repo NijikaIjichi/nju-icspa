@@ -71,3 +71,11 @@ int isatty(int fd)
 {
 	return 0;
 }
+
+void yield() {
+    syscall(SYS_sched_yield);
+}
+
+void exit(int status) {
+    syscall(SYS_exit, status);
+}

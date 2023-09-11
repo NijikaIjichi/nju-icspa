@@ -12,11 +12,13 @@
 #define SEG_WRITABLE 0x2
 #define SEG_READABLE 0x2
 #define SEG_EXECUTABLE 0x8
+#define STS_T32A       0x9
 
-#define NR_SEGMENTS 3
+#define NR_SEGMENTS 4
 #define SEG_NULL 0
 #define SEG_KERNEL_CODE 1
 #define SEG_KERNEL_DATA 2
+#define SEG_KERNEL_TSS  3
 
 #define SELECTOR_KERNEL(s) ((s << 3) | DPL_KERNEL)
 #define SELECTOR_USER(s) ((s << 3) | DPL_USER)
@@ -27,6 +29,10 @@
 #define NR_PTE 1024
 #define PAGE_MASK (4096 - 1)
 #define PT_SIZE ((NR_PTE) * (PAGE_SIZE))
+
+#define ADDR2DIR(addr) (((uint32_t)(addr)) >> 22)
+#define ADDR2TBL(addr) ((((uint32_t)(addr)) >> 12) & 0x3ff)
+#define ADDR2OFF(addr) (((uint32_t)(addr)) & 0xfff)
 
 /* force the data to be aligned with page boundary.
    statically defined page tables uses this feature. */
@@ -104,12 +110,20 @@ typedef struct GateDescriptor
 	uint32_t offset_31_16 : 16;
 } GateDesc;
 
+typedef struct {
+  uint32_t link;     // Unused
+  uint32_t esp0;     // Stack pointers and segment selectors
+  uint32_t ss0;      //   after an increase in privilege level
+  uint32_t padding[23];
+} __attribute__((packed)) TSS32;
+
 typedef struct TrapFrame
 {
+    void *cr3;
 	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax; // GPRs
 	int32_t irq;									 // #irq
 	uint32_t error_code;							 // error code
-	uint32_t eip, cs, eflags;						 // execution state saved by hardware
+	uint32_t eip, cs, eflags, esp3, ss3;			 // execution state saved by hardware
 } TrapFrame;
 
 #endif

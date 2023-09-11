@@ -15,7 +15,7 @@ make_instr_func(nemu_trap)
 		}
 		break;
 	case 110:
-		score_trap();
+		//score_trap();
 		break;
 	default:
 		printf("nemu: HIT %s TRAP at eip = 0x%08x\n", (cpu.eax == 0 ? "\e[0;32mGOOD\e[0m" : "\e[0;31mBAD\e[0m"), eip);
@@ -24,7 +24,7 @@ make_instr_func(nemu_trap)
 			printf("\e[0;31mYou have used reference implementation, DO NOT submit this version.\e[0m\n");
 		}
 		nemu_state = NEMU_STOP;
-		score_trap();
+		//score_trap();
 		break;
 	}
 	return 1;
